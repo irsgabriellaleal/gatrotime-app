@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String  @id @default(uuid())
+  firstname     String
+  lastname      String
+  email         String  @unique
+  password      String
+  role          Role    @default(CUSTOMER)
+  sessions      Session[]
+  emailVerified DateTime?
+  reservations  Reservation[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Session {
+  id           String  @id @default(uuid())
+  sessionToken String  @unique
+  userId       String
+  expires      DateTime
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Reservation {
+  id          String   @id @default(uuid())
+  userId      String
+  restaurantId String
+  tableId     String
+  date        DateTime
+  status      ReservationStatus @default(PENDING)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant  Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  table       Table     @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Restaurant {
+  id          String   @id @default(uuid())
+  name        String
+  location    String
+  description String?
+  tables      Table[]
+  reservations Reservation[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Table {
+  id          String   @id @default(uuid())
+  restaurantId String
+  number      Int
+  capacity    Int
+  status      TableStatus @default(AVAILABLE)
+  restaurant  Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  reservations Reservation[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Enum para definir os tipos de usuário
+enum Role {
+  CUSTOMER  // Cliente que faz reservas
+  ADMIN     // Administrador do restaurante
+}
+
+// Enum para status de reservas
+enum ReservationStatus {
+  PENDING   // Reserva aguardando confirmação
+  CONFIRMED // Reserva confirmada
+  CANCELED  // Reserva cancelada
+}
+
+// Enum para status da mesa
+enum TableStatus {
+  AVAILABLE   // Mesa disponível
+  OCCUPIED    // Mesa ocupada
+  RESERVED    // Mesa reservada
+}
