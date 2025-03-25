@@ -9,6 +9,7 @@ export default function RestaurantHomepage() {
   const restaurantes = [
     {
       id: 1,
+      slug: "vila-sabor",
       nome: "Vila Sabor & Arte",
       nota: 4.6,
       localizacao: "Jardins, São Paulo",
@@ -17,6 +18,7 @@ export default function RestaurantHomepage() {
     },
     {
       id: 2,
+      slug: "trattoria-moderna",
       nome: "Trattoria Moderna",
       nota: 4.7,
       localizacao: "Pinheiros, SP",
@@ -25,6 +27,7 @@ export default function RestaurantHomepage() {
     },
     {
       id: 3,
+      slug: "estacao-gourmet",
       nome: "Estação Gourmet",
       nota: 4.8,
       localizacao: "Vila Madalena, SP",
@@ -177,9 +180,11 @@ export default function RestaurantHomepage() {
                     <Utensils className="h-4 w-4" />
                     <span className="text-sm">{restaurante.cozinha}</span>
                   </div>
-                  <Button className="w-full bg-purple-600 hover:bg-purple-700">
-                    Reservar Mesa
-                  </Button>
+                  <Link href={`/restaurantes/${restaurante.slug}`}>
+                    <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white">
+                      Reservar Mesa
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}

@@ -17,7 +17,7 @@ model User {
   updatedAt     DateTime      @updatedAt
   firstname     String
   lastname      String
-  reservations  Reservation[]
+  reservas      Reserva[]
   sessions      Session[]
 }
 
@@ -29,19 +29,29 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Reservation {
-  id           String            @id @default(uuid())
-  userId       String
-  restaurantId String
-  tableId      String
-  date         DateTime
-  status       ReservationStatus @default(PENDING)
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  restaurant   Restaurant        @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  table        Table             @relation(fields: [tableId], references: [id], onDelete: Cascade)
-  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Reserva {
+  id               Int          @id @default(autoincrement())
+  nome             String
+  email            String
+  telefone         String
+  dataReserva             DateTime     // renomeado de dataReserva
+  horario          String
+  pessoas          Int
+  mensagem         String?
+  slugRestaurante  String
+  criadoEm         DateTime     @default(now())
+
+  userId           String?
+  user             User?        @relation(fields: [userId], references: [id])
+
+  restaurantId     String?
+  restaurant       Restaurant?  @relation(fields: [restaurantId], references: [id])
+
+  tableId          String?
+  table            Table?       @relation(fields: [tableId], references: [id])
 }
+
+
 
 model Restaurant {
   id           String        @id @default(uuid())
@@ -50,7 +60,7 @@ model Restaurant {
   description  String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  reservations Reservation[]
+  reservas     Reserva[]
   tables       Table[]
 }
 
@@ -62,7 +72,7 @@ model Table {
   status       TableStatus   @default(AVAILABLE)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  reservations Reservation[]
+  reservas     Reserva[]
   restaurant   Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
 }
 
