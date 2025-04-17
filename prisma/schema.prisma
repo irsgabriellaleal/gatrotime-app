@@ -38,7 +38,7 @@ model Reserva {
   horario          String
   pessoas          Int
   mensagem         String?
-  slugRestaurante  String
+  restauranteId    String
   criadoEm         DateTime     @default(now())
 
   userId           String?
@@ -54,15 +54,19 @@ model Reserva {
 
 
 model Restaurant {
-  id           String        @id @default(uuid())
+  id           String     @id @default(uuid())
   name         String
-  location     String
   description  String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  location     String
+  cidade       String
+  tipoCozinha  String
+  nota         Float
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   reservas     Reserva[]
   tables       Table[]
 }
+
 
 model Table {
   id           String        @id @default(uuid())

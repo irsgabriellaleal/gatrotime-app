@@ -40,6 +40,22 @@ export const authOptions = {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
+
+  // 👇 ADICIONADO: callbacks que garantem que userId vá para session.user
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+      }
+      return session;
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);
